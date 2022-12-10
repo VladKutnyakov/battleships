@@ -27,6 +27,7 @@
           v-for="index in 100"
           :key="index"
           :index="index"
+          :showShips="showShips"
         />
       </div>
     </div>
@@ -40,6 +41,9 @@ export default {
   name: 'Field',
   components: {
     Cell,
+  },
+  props: {
+    showShips: Boolean,
   },
   data() {
     return {

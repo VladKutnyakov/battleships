@@ -4,14 +4,14 @@
     class="cell"
     :data-coord-x="coordX"
     :data-coord-y="coordY"
-    @click="addShip()"
+    @click="clickOnCell()"
   >
     <div
       class="cell__status"
       :class="`cell__status_${status}`"
     />
     <ship
-      v-if="shipOnCell"
+      v-if="shipOnCell && showShips"
       class="cell__ship"
       :length="shipOnCell.length"
       :direction="shipOnCell.direction"
@@ -30,6 +30,7 @@ export default {
   },
   props: {
     index: Number,
+    showShips: Boolean,
   },
   data() {
     return {
@@ -41,6 +42,7 @@ export default {
       ships: state => state.ships,
       selectedShip: state => state.selectedShip,
       shipsPlayer: state => state.shipsPlayer,
+      gameStatus: state => state.gameStatus,
     }),
     coordX () {
       return this.index % 10 !== 0 ? this.index % 10 : 10
@@ -52,16 +54,14 @@ export default {
       return this.shipsPlayer.find(item => item.x === this.coordX && item.y === this.coordY)
     },
   },
-  // watch: {
-  //   selectedShip (newValue) {
-  //     if (newValue) {
-  //       this.$refs.cell.addEventListener('mouseover', {
-
-  //       })
-  //     }
-  //   },
-  // },
   methods: {
+    clickOnCell () {
+      if (this.gameStatus === 'GamePreparation') {
+        this.addShip()
+      } else if (this.gameStatus === 'Game') {
+        this.shot()
+      }
+    },
     addShip () {
       if (this.selectedShip?.count > 0) {
         this.$store.commit('setPlayerShip', {
@@ -73,6 +73,9 @@ export default {
         this.$store.commit('reduceShipsCount', this.selectedShip.length)
       }
     },
+    shot () {
+
+    }
   }
 }
 </script>

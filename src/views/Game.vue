@@ -1,17 +1,21 @@
 <template>
   <div class="game">
-    <field />
-    <field />
+    <player-field />
+    <a-i-field />
   </div>
 </template>
 
 <script>
 import Field from '@/components/Field'
+import PlayerField from '@/components/game/PlayerField'
+import AIField from '@/components/game/AIField'
 
 export default {
   name: 'Game',
   components: {
     Field,
+    PlayerField,
+    AIField,
   }
 }
 </script>
