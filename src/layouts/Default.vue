@@ -1,14 +1,15 @@
 <template>
   <div class="default-layout">
     <div class="default-layout__wrapper">
-      <component :is="view" />
+      <component :is="gameStatus" />
     </div>
   </div>
 </template>
 
 <script>
-import Game from "@/views/Game.vue";
-import GamePreparation from "@/views/GamePreparation.vue";
+import { mapState } from 'vuex'
+import Game from '@/views/Game.vue'
+import GamePreparation from '@/views/GamePreparation.vue'
 
 export default {
   name: 'DefaultLayout',
@@ -16,10 +17,10 @@ export default {
     Game,
     GamePreparation,
   },
-  data() {
-    return {
-      view: 'GamePreparation',
-    };
+  computed: {
+    ...mapState({
+      gameStatus: state => state.gameStatus,
+    }),
   },
 }
 </script>
@@ -30,7 +31,7 @@ export default {
 
   .default-layout__wrapper {
     height: -webkit-fill-available;
-    padding: 5% 10%;
+    padding: 3% 20%;
   }
 }
 </style>

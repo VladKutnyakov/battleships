@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import Cell from "@/components/Cell"
+import Cell from '@/components/Cell'
 
 export default {
   name: 'Field',
@@ -61,6 +61,7 @@ export default {
     .field-grid__numbers {
       display: grid;
       grid-template-rows: repeat(10, 40px);
+      grid-gap: 2px;
       align-items: center;
 
       .numbers__item {
@@ -72,6 +73,7 @@ export default {
       display: grid;
       grid-template-columns: repeat(10, 40px);
       grid-column: 2/3;
+      grid-gap: 2px;
       align-items: center;
 
       .letters__item {
@@ -83,6 +85,9 @@ export default {
       display: grid;
       grid-template-columns: repeat(10, 40px);
       grid-template-rows: repeat(10, 40px);
+      grid-gap: 2px;
+      border: 2px solid rgb(59, 59, 59);
+      background-color: rgb(59, 59, 59);
     }
   }
 }

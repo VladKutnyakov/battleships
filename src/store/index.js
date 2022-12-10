@@ -23,6 +23,7 @@ export default createStore({
     shipsPlayer: [],
     shipsAi: [],
     selectedShip: null,
+    gameStatus: 'GamePreparation',
   },
   getters: {
   },
@@ -32,6 +33,13 @@ export default createStore({
     },
     setSelectedShip (state, payload) {
       state.selectedShip = payload
+    },
+    reduceShipsCount (state, payload) {
+      const index = state.ships.findIndex(item => item.length === payload)
+      state.ships[index].count--
+    },
+    setGameStatus (state, payload) {
+      state.gameStatus = payload
     }
   },
   actions: {

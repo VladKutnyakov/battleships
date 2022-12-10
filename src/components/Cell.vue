@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="cell"
     class="cell"
     :data-coord-x="coordX"
     :data-coord-y="coordY"
@@ -7,38 +8,71 @@
   >
     <div
       class="cell__status"
-      :class="`cell__status_${status}`" />
+      :class="`cell__status_${status}`"
+    />
+    <ship
+      v-if="shipOnCell"
+      class="cell__ship"
+      :length="shipOnCell.length"
+      :direction="shipOnCell.direction"
+    />
   </div>  
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import Ship from '@/components/Ship.vue'
+
 export default {
   name: 'Cell',
+  components: {
+    Ship,
+  },
+  props: {
+    index: Number,
+  },
   data() {
     return {
       status: 'initial',
     }
   },
-  props: {
-    index: Number,
-  },
   computed: {
+    ...mapState({
+      ships: state => state.ships,
+      selectedShip: state => state.selectedShip,
+      shipsPlayer: state => state.shipsPlayer,
+    }),
     coordX () {
       return this.index % 10 !== 0 ? this.index % 10 : 10
     },
     coordY () {
       return Math.ceil(this.index / 10)
-    }
+    },
+    shipOnCell () {
+      return this.shipsPlayer.find(item => item.x === this.coordX && item.y === this.coordY)
+    },
   },
+  // watch: {
+  //   selectedShip (newValue) {
+  //     if (newValue) {
+  //       this.$refs.cell.addEventListener('mouseover', {
+
+  //       })
+  //     }
+  //   },
+  // },
   methods: {
-    addShip (index) {
-      this.$store.commit('setPlayerShip', {
-        x: this.coordX,
-        y: this.coordY,
-        length: 3,
-        direction: 'left',
-      })
-    }
+    addShip () {
+      if (this.selectedShip?.count > 0) {
+        this.$store.commit('setPlayerShip', {
+          x: this.coordX,
+          y: this.coordY,
+          length: this.selectedShip.length,
+          direction: 'horizontal',
+        })
+        this.$store.commit('reduceShipsCount', this.selectedShip.length)
+      }
+    },
   }
 }
 </script>
@@ -50,7 +84,6 @@ export default {
   height: 40px;
   background: rgb(216,214,246);
   background: radial-gradient(circle, rgba(216,214,246,1) 0%, rgba(224,220,238,1) 0%, rgba(201,221,244,1) 100%);
-  border: 2px solid rgb(59, 59, 59);
   cursor: pointer;
 
   &::after {
@@ -84,6 +117,13 @@ export default {
       mask-image: url('@/assets/svg/x.svg');
       background-color: rgb(180, 50, 50);
     }
+  }
+
+  .cell__ship {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9;
   }
 }
 </style>

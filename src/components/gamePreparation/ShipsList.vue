@@ -13,16 +13,31 @@
       </div>
       <div class="item__ship">
         <ship
+          :class="{ 'ship_disabled': ship.count <= 0 }"
           :length="ship.length"
           :direction="'horizontal'"
+          @click="setSelectedShip(ship)"
         />
       </div>
+    </div>
+    <div
+      v-if="selectedShip"
+      class="ships-list__selected-ship"
+    >
+      <div class="selected-ship__heading">
+        Выбранный корабль
+      </div>
+      <ship
+        class="selected-ship__item"
+        :length="selectedShip.length"
+        :direction="'horizontal'"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState } from 'vuex'
 import Ship from '@/components/Ship.vue'
 
 export default {
@@ -33,14 +48,21 @@ export default {
   computed: {
     ...mapState({
       ships: state => state.ships,
+      selectedShip: state => state.selectedShip,
     }),
+  },
+  methods: {
+    setSelectedShip (ship) {
+      this.$store.commit('setSelectedShip', ship)
+    },
   },
 }
 </script>
 
 <style lang="scss">
 .ships-list {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   grid-gap: 24px;
 
   .ships-list__heading {
@@ -55,9 +77,18 @@ export default {
     grid-gap: 24px;
 
     .item__count {
+      font-size: 24px;
     }
 
     .item__ship {
+    }
+  }
+
+  .ships-list__selected-ship {
+
+    .selected-ship__heading {
+      padding: 0 0 12px 0;
+      text-align: center;
     }
   }
 }

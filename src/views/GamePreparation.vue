@@ -4,7 +4,7 @@
       Подготовка
     </div>
     <div class="game-preparation__text">
-      Выберите нужный корабль из аресенала, кликнув по нему. Затем кликните по клетке, чтобы поставить выбранный корабль.<br>Вы можете развернуть поставленный корабль, кликнув по нему.
+      Выберите нужный корабль из аресенала, кликнув по нему. Затем кликните по клетке поля, чтобы поставить выбранный корабль.<br>Вы можете развернуть поставленный корабль, кликнув по нему.
     </div>
     <div class="game-preparation__redactor">
       <field />
@@ -12,7 +12,8 @@
     </div>
     <div class="game-preparation__buttons">
       <app-button
-        :disabled="!isFieldReady"  
+        :disabled="!isFieldReady"
+        @click="startGame()" 
       >
         В бой!
       </app-button>
@@ -21,10 +22,10 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import Field from "@/components/Field";
-import ShipsList from "@/components/gamePreparation/ShipsList";
-import AppButton from "@/components/basic/AppButton";
+import { mapState } from 'vuex'
+import Field from '@/components/Field'
+import ShipsList from '@/components/gamePreparation/ShipsList'
+import AppButton from '@/components/basic/AppButton'
 
 export default {
   name: 'GamePreparation',
@@ -39,8 +40,13 @@ export default {
     }),
     isFieldReady () {
       return this.shipsPlayer.length === 10
+    },
+  },
+  methods: {
+    startGame () {
+      this.$store.commit('setGameStatus', 'Game')
     }
-  }
+  },
 }
 </script>
 
@@ -64,14 +70,13 @@ export default {
     padding: 48px 0;
     display: flex;
     justify-content: space-between;
-    align-items: center;
   }
 
   .game-preparation__buttons {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 72px 0;
+    padding: 24px 0 0 0;
   }
 }
 </style>

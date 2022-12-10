@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import DefaultLayout from "@/layouts/Default";
+import DefaultLayout from '@/layouts/Default'
 
 export default {
   name: 'App',
