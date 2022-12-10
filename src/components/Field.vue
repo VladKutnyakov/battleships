@@ -3,7 +3,6 @@
     <div 
       class="field__field-grid"
     >
-      <div class=""></div>
       <div class="field-grid__letters">
         <div
           class="letters__item"
@@ -72,6 +71,7 @@ export default {
     .field-grid__letters {
       display: grid;
       grid-template-columns: repeat(10, 40px);
+      grid-column: 2/3;
       align-items: center;
 
       .letters__item {

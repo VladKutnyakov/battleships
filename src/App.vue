@@ -1,19 +1,14 @@
 <template>
-  <component :is="layout" />
+  <default-layout />
 </template>
 
 <script>
-import GameLayout from "@/layouts/Game";
+import DefaultLayout from "@/layouts/Default";
 
 export default {
   name: 'App',
   components: {
-    GameLayout,
-  },
-  data() {
-    return {
-      layout: "GameLayout",
-    };
+    DefaultLayout,
   },
 }
 </script>
@@ -27,6 +22,7 @@ html {
     padding: 0;
     box-sizing: border-box;
     font-family: 'Noto Sans', sans-serif;
+    font-size: 20px;
   }
 }
 </style>

@@ -3,6 +3,7 @@
     class="cell"
     :data-coord-x="coordX"
     :data-coord-y="coordY"
+    @click="addShip()"
   >
     <div
       class="cell__status"
@@ -27,6 +28,16 @@ export default {
     },
     coordY () {
       return Math.ceil(this.index / 10)
+    }
+  },
+  methods: {
+    addShip (index) {
+      this.$store.commit('setPlayerShip', {
+        x: this.coordX,
+        y: this.coordY,
+        length: 3,
+        direction: 'left',
+      })
     }
   }
 }
