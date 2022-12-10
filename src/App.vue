@@ -1,17 +1,32 @@
 <template>
-  <field />
+  <component :is="layout" />
 </template>
 
 <script>
-import Field from "@/components/Field"
+import GameLayout from "@/layouts/Game";
 
 export default {
   name: 'App',
   components: {
-    Field,
-  }
+    GameLayout,
+  },
+  data() {
+    return {
+      layout: "GameLayout",
+    };
+  },
 }
 </script>
 
-<style>
+<style lang="scss">
+html {
+  scroll-behavior: smooth;
+  
+  body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Noto Sans', sans-serif;
+  }
+}
 </style>
