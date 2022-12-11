@@ -20,9 +20,14 @@ export default createStore({
         count: 1,
       },
     ],
+
     playerShips: [],
     aiShips: [],
+
     selectedShip: null,
+
+    playerShipsRandomPlacement: false,
+
     gameStatus: 'GamePreparation',
   },
   getters: {
@@ -30,6 +35,9 @@ export default createStore({
   mutations: {
     addPlayerShip (state, payload) {
       state.playerShips.push(payload)
+    },
+    setPlayerShips (state, payload) {
+      state.playerShips = payload
     },
     removePlayerShip (state, payload) {
       const index = state.playerShips.indexOf(payload)
@@ -40,6 +48,26 @@ export default createStore({
     setSelectedShip (state, payload) {
       state.selectedShip = payload
     },
+    resetShips (state) {
+      state.ships = [
+        {
+          length: 1,
+          count: 4,
+        },
+        {
+          length: 2,
+          count: 3,
+        },
+        {
+          length: 3,
+          count: 2,
+        },
+        {
+          length: 4,
+          count: 1,
+        },
+      ]
+    },
     incrementShipsCount (state, payload) {
       const index = state.ships.findIndex(item => item.length === payload)
       state.ships[index].count++
@@ -47,6 +75,9 @@ export default createStore({
     decrementShipsCount (state, payload) {
       const index = state.ships.findIndex(item => item.length === payload)
       state.ships[index].count--
+    },
+    setPlayerShipsRandomPlacement (state, payload) {
+      state.playerShipsRandomPlacement = payload
     },
     setGameStatus (state, payload) {
       state.gameStatus = payload

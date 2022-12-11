@@ -13,7 +13,7 @@ export default {
   name: 'PlayerField',
   components: {
     Field,
-  }
+  },
 }
 </script>
 

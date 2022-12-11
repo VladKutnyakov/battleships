@@ -9,10 +9,16 @@
     <div class="game-preparation__redactor">
       <field 
         :showShips="true"
+        :randomShips="playerShipsRandomPlacement"
       />
       <ships-list />
     </div>
     <div class="game-preparation__buttons">
+      <app-button
+        @click="randomShips()"
+      >
+        Случайно
+      </app-button>
       <app-button
         :disabled="!isFieldReady"
         @click="startGame()" 
@@ -39,14 +45,23 @@ export default {
   computed: {
     ...mapState({
       playerShips: state => state.playerShips,
+      playerShipsRandomPlacement: state => state.playerShipsRandomPlacement,
     }),
     isFieldReady () {
       return this.playerShips.length === 10
     },
   },
   methods: {
+    randomShips () {
+      this.$store.commit('resetShips')
+      this.$store.commit('setPlayerShips', [])
+      this.$store.commit('setPlayerShipsRandomPlacement', true)
+    },
     startGame () {
       this.$store.commit('setGameStatus', 'Game')
+    },
+    setReady () {
+      this.$store.commit('setPlayerShipsRandomPlacement', false)
     }
   },
 }
@@ -78,6 +93,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    grid-gap: 24px;
     padding: 48px 0 0 0;
   }
 }

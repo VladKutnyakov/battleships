@@ -29,6 +29,7 @@
           :key="index"
           :index="index"
           :showShips="showShips"
+          :randomShips="checkRandomCell(index)"
         />
       </div>
     </div>
@@ -36,6 +37,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Cell from '@/components/Cell'
 
 export default {
@@ -45,10 +47,42 @@ export default {
   },
   props: {
     showShips: Boolean,
+    randomShips: Boolean,
   },
   data() {
     return {
       letters: ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К'],
+      randomCells: [],
+    }
+  },
+  computed: {
+    ...mapState({
+      playerShips: state => state.playerShips,
+      playerShipsRandomPlacement: state => state.playerShipsRandomPlacement,
+    })
+  },
+  watch: {
+    randomShips (newValue) {
+      if (newValue) {
+        this.placeShipsRandom()
+      }
+    },
+  },
+  methods: {
+    checkRandomCell (index) {
+      return this.randomCells.includes(index)
+    },
+    placeShipsRandom () {
+      setTimeout(() => {
+        let randomCell
+        while (this.checkRandomCell(randomCell)) {
+          randomCell = Math.floor(Math.random() * 100 + 1)
+        }
+        this.randomCells.push(randomCell)
+        if (this.playerShips.length < 10) {
+          this.placeShipsRandom()
+        }
+      }, 0)
     }
   },
 }

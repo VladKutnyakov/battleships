@@ -21,7 +21,7 @@
       </div>
     </div>
     <div
-      v-if="selectedShip"
+      v-if="selectedShip && !playerShipsRandomPlacement"
       class="ships-list__selected-ship"
     >
       <div class="selected-ship__heading">
@@ -56,6 +56,7 @@ export default {
     ...mapState({
       ships: state => state.ships,
       selectedShip: state => state.selectedShip,
+      playerShipsRandomPlacement: state => state.playerShipsRandomPlacement,
     }),
   },
   methods: {

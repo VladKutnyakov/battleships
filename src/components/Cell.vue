@@ -33,6 +33,7 @@ export default {
   props: {
     index: Number,
     showShips: Boolean,
+    randomShips: Boolean,
   },
   data() {
     return {
@@ -56,7 +57,7 @@ export default {
       return this.playerShips.find(item => item.x === this.coordX && item.y === this.coordY)
     },
   },
-  // watch: {
+  watch: {
   //   selectedShip (newValue) {
   //     if (newValue) {
   //       this.$refs.cell.addEventListener('mouseenter', (event) => {
@@ -73,7 +74,16 @@ export default {
   //       })
   //     }
   //   },
-  // },
+    randomShips (newValue) {
+      if (newValue && this.playerShips.length !== 10) {
+        this.selectRandomShip()
+        this.placeShip()
+      } else {
+        this.$store.commit('setSelectedShip', null)
+        this.$store.commit('setPlayerShipsRandomPlacement', false)
+      }
+    }
+  },
   methods: {
     clickOnCell () {
       if (this.gameStatus === 'GamePreparation') {
@@ -161,6 +171,18 @@ export default {
         })
       }
     },
+    selectRandomShip () {
+      let selectedShipIndex = Math.floor(Math.random() * 4)
+      while (this.ships[selectedShipIndex]?.count === 0) {
+        selectedShipIndex = Math.floor(Math.random() * 4)
+      }
+      const orientation = Math.floor(Math.random() * 2) === 0 ? 'horizontal' : 'vertical'
+      const ship = {
+        ...this.ships[selectedShipIndex],
+        orientation: orientation,
+      }
+      this.$store.commit('setSelectedShip', ship)
+    }
   }
 }
 </script>
