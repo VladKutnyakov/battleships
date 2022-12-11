@@ -15,8 +15,8 @@
         <ship
           :class="{ 'ship_disabled': ship.count <= 0 }"
           :length="ship.length"
-          :direction="'horizontal'"
-          @click="setSelectedShip(ship)"
+          :orientation="'horizontal'"
+          @click="chooseShip(ship)"
         />
       </div>
     </div>
@@ -27,11 +27,18 @@
       <div class="selected-ship__heading">
         Выбранный корабль
       </div>
-      <ship
-        class="selected-ship__item"
-        :length="selectedShip.length"
-        :direction="'horizontal'"
-      />
+      <div class="selected-ship__ship-item">
+        <ship
+          :length="selectedShip.length"
+          :orientation="selectedShip.orientation"
+        />
+        <div
+          class="ship-item__icon"
+          @click="flipChoosenShip()"
+        >
+          <img src="@/assets/svg/arrow-flip.svg" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -52,9 +59,19 @@ export default {
     }),
   },
   methods: {
-    setSelectedShip (ship) {
+    chooseShip (ship) {
+      ship.orientation = 'horizontal'
       this.$store.commit('setSelectedShip', ship)
     },
+    flipChoosenShip () {
+      let newShip = this.selectedShip
+      if (newShip.orientation === 'horizontal') {
+        newShip.orientation = 'vertical'
+      } else if (newShip.orientation === 'vertical') {
+        newShip.orientation = 'horizontal'
+      }
+      this.$store.commit('setSelectedShip', newShip)
+    }
   },
 }
 </script>
@@ -89,6 +106,22 @@ export default {
     .selected-ship__heading {
       padding: 0 0 12px 0;
       text-align: center;
+    }
+
+    .selected-ship__ship-item {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+
+      .ship-item__icon {
+        width: 40px;
+        cursor: pointer;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
     }
   }
 }

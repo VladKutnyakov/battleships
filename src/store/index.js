@@ -20,21 +20,31 @@ export default createStore({
         count: 1,
       },
     ],
-    shipsPlayer: [],
-    shipsAi: [],
+    playerShips: [],
+    aiShips: [],
     selectedShip: null,
     gameStatus: 'GamePreparation',
   },
   getters: {
   },
   mutations: {
-    setPlayerShip (state, payload) {
-      state.shipsPlayer.push(payload)
+    addPlayerShip (state, payload) {
+      state.playerShips.push(payload)
+    },
+    removePlayerShip (state, payload) {
+      const index = state.playerShips.indexOf(payload)
+      if (index !== -1) {
+        state.playerShips.splice(index, 1)
+      }
     },
     setSelectedShip (state, payload) {
       state.selectedShip = payload
     },
-    reduceShipsCount (state, payload) {
+    incrementShipsCount (state, payload) {
+      const index = state.ships.findIndex(item => item.length === payload)
+      state.ships[index].count++
+    },
+    decrementShipsCount (state, payload) {
       const index = state.ships.findIndex(item => item.length === payload)
       state.ships[index].count--
     },

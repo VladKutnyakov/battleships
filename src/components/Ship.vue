@@ -1,7 +1,8 @@
 <template>
   <div
     class="ship"
-    :class="`ship__direction-${direction}`"
+    :class="`ship__orientation-${orientation}`"
+    :data-ship-length="length"
   >
     <div
       class="ship__ship-part"
@@ -16,23 +17,23 @@ export default {
   name: 'Ship',
   props: {
     length: Number,
-    direction: String,
+    orientation: String,
   },
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .ship {
   display: flex;
   grid-gap: 2px;
   background-color: transparent;
   cursor: pointer;
 
-  &.ship__direction-hors {
+  &.ship__orientation-hors {
     flex-direction: row;
   }
 
-  &.ship__direction-vertical {
+  &.ship__orientation-vertical {
     flex-direction: column;
   }
 

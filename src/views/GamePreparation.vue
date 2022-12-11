@@ -4,10 +4,12 @@
       Подготовка
     </div>
     <div class="game-preparation__text">
-      Выберите нужный корабль из аресенала, кликнув по нему. Затем кликните по клетке поля, чтобы поставить выбранный корабль.<br>Вы можете развернуть поставленный корабль, кликнув по нему.
+      Выберите нужный корабль из аресенала, кликнув по нему. Затем кликните по клетке поля, чтобы поставить выбранный корабль. <br> Для удаления корябля с поля кликните по нему правой кнопкой мыши.
     </div>
     <div class="game-preparation__redactor">
-      <field />
+      <field 
+        :showShips="true"
+      />
       <ships-list />
     </div>
     <div class="game-preparation__buttons">
@@ -36,10 +38,10 @@ export default {
   },
   computed: {
     ...mapState({
-      shipsPlayer: state => state.shipsPlayer,
+      playerShips: state => state.playerShips,
     }),
     isFieldReady () {
-      return this.shipsPlayer.length === 10
+      return this.playerShips.length === 10
     },
   },
   methods: {
@@ -76,7 +78,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px 0 0 0;
+    padding: 48px 0 0 0;
   }
 }
 </style>

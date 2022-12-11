@@ -23,6 +23,7 @@
       </div>
       <div class="field-grid__cells">
         <cell
+          ref="cells"
           class="field-grid__cell"
           v-for="index in 100"
           :key="index"
@@ -53,7 +54,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .field {
   
   .field__field-grid {
