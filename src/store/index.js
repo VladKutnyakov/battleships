@@ -26,6 +26,7 @@ export default createStore({
 
     selectedShip: null,
 
+    randomCellsIndex: [],
     playerShipsRandomPlacement: false,
 
     gameStatus: 'GamePreparation',
@@ -75,6 +76,12 @@ export default createStore({
     decrementShipsCount (state, payload) {
       const index = state.ships.findIndex(item => item.length === payload)
       state.ships[index].count--
+    },
+    addRandomCellsIndex (state, payload) {
+      state.randomCellsIndex.push(payload)
+    },
+    setRandomCellsIndex (state, payload) {
+      state.randomCellsIndex = payload
     },
     setPlayerShipsRandomPlacement (state, payload) {
       state.playerShipsRandomPlacement = payload

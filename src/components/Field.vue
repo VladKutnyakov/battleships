@@ -52,13 +52,12 @@ export default {
   data() {
     return {
       letters: ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К'],
-      randomCells: [],
     }
   },
   computed: {
     ...mapState({
       playerShips: state => state.playerShips,
-      playerShipsRandomPlacement: state => state.playerShipsRandomPlacement,
+      randomCellsIndex: state => state.randomCellsIndex,
     })
   },
   watch: {
@@ -70,7 +69,7 @@ export default {
   },
   methods: {
     checkRandomCell (index) {
-      return this.randomCells.includes(index)
+      return this.randomCellsIndex.includes(index)
     },
     placeShipsRandom () {
       setTimeout(() => {
@@ -78,7 +77,7 @@ export default {
         while (this.checkRandomCell(randomCell)) {
           randomCell = Math.floor(Math.random() * 100 + 1)
         }
-        this.randomCells.push(randomCell)
+        this.$store.commit('addRandomCellsIndex', randomCell)
         if (this.playerShips.length < 10) {
           this.placeShipsRandom()
         }

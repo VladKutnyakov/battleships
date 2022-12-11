@@ -81,6 +81,7 @@ export default {
       } else {
         this.$store.commit('setSelectedShip', null)
         this.$store.commit('setPlayerShipsRandomPlacement', false)
+        this.$store.commit('setRandomCellsIndex', [])
       }
     }
   },
