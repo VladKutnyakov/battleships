@@ -81,7 +81,8 @@ export default {
 .ships-list {
   display: flex;
   flex-direction: column;
-  grid-gap: 24px;
+  grid-gap: 16px;
+  min-width: 210px;
 
   .ships-list__heading {
     text-align: center;
@@ -104,6 +105,7 @@ export default {
 
   .ships-list__selected-ship {
 
+
     .selected-ship__heading {
       padding: 0 0 12px 0;
       text-align: center;
@@ -113,6 +115,7 @@ export default {
       display: flex;
       align-items: start;
       justify-content: space-between;
+      // grid-gap: 4px;
 
       .ship-item__icon {
         width: 40px;

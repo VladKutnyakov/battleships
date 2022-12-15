@@ -1,12 +1,14 @@
 <template>
   <div class="ai-field">
     <field
-      :showShips="false"
+      :showPlayerShips="false"
+      :randomShips="aiShipsRandomPlacement"
     />
   </div>  
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Field from '@/components/Field'
 
 export default {
@@ -14,6 +16,16 @@ export default {
   components: {
     Field,
   },
+  computed: {
+    ...mapState({
+      aiShipsRandomPlacement: state => state.aiShipsRandomPlacement,
+    }),
+  },
+  mounted () {
+    this.$store.commit('resetShips')
+    this.$store.commit('setAiShips', [])
+    this.$store.commit('setAiShipsRandomPlacement', true)
+  }
 }
 </script>
 

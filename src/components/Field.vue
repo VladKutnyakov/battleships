@@ -28,7 +28,7 @@
           v-for="index in 100"
           :key="index"
           :index="index"
-          :showShips="showShips"
+          :showPlayerShips="showPlayerShips"
           :randomShips="checkRandomCell(index)"
         />
       </div>
@@ -46,7 +46,7 @@ export default {
     Cell,
   },
   props: {
-    showShips: Boolean,
+    showPlayerShips: Boolean,
     randomShips: Boolean,
   },
   data() {
@@ -57,7 +57,10 @@ export default {
   computed: {
     ...mapState({
       playerShips: state => state.playerShips,
+      aiShips: state => state.aiShips,
       randomCellsIndex: state => state.randomCellsIndex,
+      playerShipsRandomPlacement: state => state.playerShipsRandomPlacement,
+      aiShipsRandomPlacement: state => state.aiShipsRandomPlacement,
     })
   },
   watch: {
@@ -78,7 +81,10 @@ export default {
           randomCell = Math.floor(Math.random() * 100 + 1)
         }
         this.$store.commit('addRandomCellsIndex', randomCell)
-        if (this.playerShips.length < 10) {
+        if (this.playerShipsRandomPlacement && this.playerShips.length < 10) {
+          this.placeShipsRandom()
+        }
+        if (this.aiShipsRandomPlacement && this.aiShips.length < 10) {
           this.placeShipsRandom()
         }
       }, 0)

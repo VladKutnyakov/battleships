@@ -28,6 +28,7 @@ export default createStore({
 
     randomCellsIndex: [],
     playerShipsRandomPlacement: false,
+    aiShipsRandomPlacement: false,
 
     gameStatus: 'GamePreparation',
   },
@@ -39,6 +40,12 @@ export default createStore({
     },
     setPlayerShips (state, payload) {
       state.playerShips = payload
+    },
+    addAiShip (state, payload) {
+      state.aiShips.push(payload)
+    },
+    setAiShips (state, payload) {
+      state.aiShips = payload
     },
     removePlayerShip (state, payload) {
       const index = state.playerShips.indexOf(payload)
@@ -85,6 +92,13 @@ export default createStore({
     },
     setPlayerShipsRandomPlacement (state, payload) {
       state.playerShipsRandomPlacement = payload
+    },
+    setAiShipsRandomPlacement (state, payload) {
+      state.aiShipsRandomPlacement = payload
+    },
+    editAiShip (state, payload) {
+      const index = state.aiShips.findIndex(item => payload.x === item.x && payload.y === item.y)
+      state.aiShips[index] = payload
     },
     setGameStatus (state, payload) {
       state.gameStatus = payload

@@ -8,13 +8,14 @@
     </div>
     <div class="game-preparation__redactor">
       <field 
-        :showShips="true"
+        :showPlayerShips="true"
         :randomShips="playerShipsRandomPlacement"
       />
       <ships-list />
     </div>
     <div class="game-preparation__buttons">
       <app-button
+        :disabled="playerShipsRandomPlacement"
         @click="randomShips()"
       >
         Случайно
@@ -60,9 +61,9 @@ export default {
     startGame () {
       this.$store.commit('setGameStatus', 'Game')
     },
-    setReady () {
-      this.$store.commit('setPlayerShipsRandomPlacement', false)
-    }
+    // setReady () {
+    //   this.$store.commit('setPlayerShipsRandomPlacement', false)
+    // }
   },
 }
 </script>
@@ -94,7 +95,6 @@ export default {
     align-items: center;
     justify-content: center;
     grid-gap: 24px;
-    padding: 48px 0 0 0;
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="player-field">
     <field
-      :showShips="true"
+      :showPlayerShips="true"
     />
   </div>  
 </template>
