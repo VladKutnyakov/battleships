@@ -7,30 +7,42 @@
 
 <script>
 import { mapState } from 'vuex'
-import Field from '@/components/Field'
 import PlayerField from '@/components/game/PlayerField'
 import AIField from '@/components/game/AIField'
 
 export default {
   name: 'Game',
   components: {
-    Field,
     PlayerField,
     AIField,
   },
   computed: {
     ...mapState({
+      playerShips: state => state.playerShips,
       aiShips: state => state.aiShips,
-    })
+    }),
+
+    aliveAiShipsCount () {
+      return this.aiShips.filter(item => item.health > 0).length
+    },
+
+    alivePlayerShipsCount () {
+      return this.playerShips.filter(item => item.health > 0).length
+    },
   },
-  // watch: {
-  //   aiShips (newValue) {
-  //     console.log(newValue)
-  //     if (newValue.length > 0 && !newValue.find(item => item.health > 0)) {
-  //       console.log('Победа!')
-  //     }
-  //   }
-  // },
+  watch: {
+    aliveAiShipsCount (newValue) {
+      if (newValue === 0) {
+        console.log('Победа!')
+      }
+    },
+
+    alivePlayerShipsCount (newValue) {
+      if (newValue === 0) {
+        console.log('Поражение!')
+      }
+    },
+  },
 }
 </script>
 

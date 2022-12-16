@@ -98,9 +98,6 @@ export default {
     .item__count {
       font-size: 24px;
     }
-
-    .item__ship {
-    }
   }
 
   .ships-list__selected-ship {

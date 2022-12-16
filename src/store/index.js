@@ -97,12 +97,12 @@ export default createStore({
       state.aiShipsRandomPlacement = payload
     },
     editAiShip (state, payload) {
-      const index = state.aiShips.findIndex(item => payload.x === item.x && payload.y === item.y)
+      const index = state.aiShips.findIndex(item => item.coordinates === payload.coordinates)
       state.aiShips[index] = payload
     },
     setGameStatus (state, payload) {
       state.gameStatus = payload
-    }
+    },
   },
   actions: {
   },

@@ -1,8 +1,12 @@
 <template>
   <div class="ai-field">
     <field
-      :showPlayerShips="false"
+      :dataName="'ai'"
+      :placedShips="aiShips"
+      :showShips="true"
       :randomShips="aiShipsRandomPlacement"
+      @placeShip="$store.commit('addAiShip', $event)"
+      @stopRandom="$store.commit('setAiShipsRandomPlacement', false)"
     />
   </div>  
 </template>
@@ -18,6 +22,7 @@ export default {
   },
   computed: {
     ...mapState({
+      aiShips: state => state.aiShips,
       aiShipsRandomPlacement: state => state.aiShipsRandomPlacement,
     }),
   },

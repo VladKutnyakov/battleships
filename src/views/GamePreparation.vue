@@ -7,10 +7,7 @@
       Выберите нужный корабль из аресенала, кликнув по нему. Затем кликните по клетке поля, чтобы поставить выбранный корабль. <br> Для удаления корябля с поля кликните по нему правой кнопкой мыши.
     </div>
     <div class="game-preparation__redactor">
-      <field 
-        :showPlayerShips="true"
-        :randomShips="playerShipsRandomPlacement"
-      />
+      <player-field />
       <ships-list />
     </div>
     <div class="game-preparation__buttons">
@@ -32,14 +29,14 @@
 
 <script>
 import { mapState } from 'vuex'
-import Field from '@/components/Field'
+import PlayerField from '@/components/game/PlayerField'
 import ShipsList from '@/components/gamePreparation/ShipsList'
 import AppButton from '@/components/basic/AppButton'
 
 export default {
   name: 'GamePreparation',
   components: {
-    Field,
+    PlayerField,
     ShipsList,
     AppButton,
   },
@@ -48,6 +45,7 @@ export default {
       playerShips: state => state.playerShips,
       playerShipsRandomPlacement: state => state.playerShipsRandomPlacement,
     }),
+    
     isFieldReady () {
       return this.playerShips.length === 10
     },
@@ -58,12 +56,10 @@ export default {
       this.$store.commit('setPlayerShips', [])
       this.$store.commit('setPlayerShipsRandomPlacement', true)
     },
+
     startGame () {
       this.$store.commit('setGameStatus', 'Game')
     },
-    // setReady () {
-    //   this.$store.commit('setPlayerShipsRandomPlacement', false)
-    // }
   },
 }
 </script>

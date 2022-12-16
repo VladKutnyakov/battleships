@@ -2,38 +2,44 @@
   <div
     ref="cell"
     class="cell"
-    :data-coord-x="coordX"
-    :data-coord-y="coordY"
     @click="clickOnCell()"
     @contextmenu.prevent="removeShip()"
   >
     <div
       class="cell__status"
-      :class="!showPlayerShips && aiShipOnCell?.health === 0 ? 'cell__status_dead' : `cell__status_${status}`"
+      :class="shipPartOnCell?.health === 0 ? 'cell__status_dead' : `cell__status_${status}`"
     />
-    <ship
-      ref="playerShip"
-      v-if="playerShipOnCell && showPlayerShips"
+    <!-- <ship
+      ref="ship"
+      v-if="shipOnCell && showShips"
       class="cell__ship"
-      :length="playerShipOnCell.length"
-      :orientation="playerShipOnCell.orientation"
+      :length="shipOnCell.length"
+      :orientation="shipOnCell.orientation"
+    /> -->
+    <ship-part 
+      v-if="shipPartOnCell && showShips"
     />
-  </div>  
+  </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import Ship from '@/components/Ship.vue'
+import ShipPart from '@/components/ShipPart.vue'
 
 export default {
   name: 'Cell',
   components: {
     Ship,
+    ShipPart,
   },
+  emits: ["placeShip", "stopRandom"],
   props: {
     index: Number,
-    showPlayerShips: Boolean,
+    showShips: Boolean,
+    placedShips: Array,
     randomShips: Boolean,
+    dataName: String,
   },
   data() {
     return {
@@ -44,43 +50,51 @@ export default {
     ...mapState({
       ships: state => state.ships,
       selectedShip: state => state.selectedShip,
-      playerShips: state => state.playerShips,
-      aiShips: state => state.aiShips,
-      playerShipsRandomPlacement: state => state.playerShipsRandomPlacement,
-      aiShipsRandomPlacement: state => state.aiShipsRandomPlacement,
       gameStatus: state => state.gameStatus,
     }),
+
     coordX () {
       return this.index % 10 !== 0 ? this.index % 10 : 10
     },
     coordY () {
       return Math.ceil(this.index / 10)
     },
-    playerShipOnCell () {
-      return this.playerShips.find(item => item?.coordinates[0].x === this.coordX && item?.coordinates[0].y === this.coordY)
+    shipOnCell () {
+      return this.placedShips.find(item => item?.coordinates[0].x === this.coordX && item?.coordinates[0].y === this.coordY)
     },
 
-    aiShipOnCell () {
-      return this.aiShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX && itemCoordinates.y === this.coordY))
+    shipPartOnCell () {
+      return this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX && itemCoordinates.y === this.coordY))
     },
+
+    deadShipNearby () {
+      return (
+        this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX && itemCoordinates.y === this.coordY + 1) && item.health === 0) ||
+        this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX + 1 && itemCoordinates.y === this.coordY) && item.health === 0) ||
+        this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX + 1 && itemCoordinates.y === this.coordY + 1) && item.health === 0) ||
+        this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX && itemCoordinates.y === this.coordY - 1) && item.health === 0) ||
+        this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX - 1 && itemCoordinates.y === this.coordY) && item.health === 0) ||
+        this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX - 1 && itemCoordinates.y === this.coordY - 1) && item.health === 0) ||        this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX && itemCoordinates.y === this.coordY - 1) && item.health === 0) ||
+        this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX - 1 && itemCoordinates.y === this.coordY + 1) && item.health === 0) ||
+        this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX + 1 && itemCoordinates.y === this.coordY - 1) && item.health === 0) 
+      )
+    }
   },
   watch: {
     randomShips (newValue) {
-      if (
-          newValue &&
-          (this.playerShipsRandomPlacement && this.playerShips.length !== 10) ||
-          (this.aiShipsRandomPlacement && this.aiShips.length !== 10)) {
+      if (newValue && this.placedShips.length < 10) {
         this.selectRandomShip()
         this.placeShip()
       } else {
         this.$store.commit('setSelectedShip', null)
-        if (this.playerShipsRandomPlacement) {
-          this.$store.commit('setPlayerShipsRandomPlacement', false)
-        }
-        if (this.aiShipsRandomPlacement) {
-          this.$store.commit('setAiShipsRandomPlacement', false)
-        }
         this.$store.commit('setRandomCellsIndex', [])
+        this.$emit('stopRandom')
+      }
+    },
+
+    deadShipNearby (newValue) {
+      if (newValue) {
+        this.status = 'empty'
       }
     }
   },
@@ -88,7 +102,7 @@ export default {
     clickOnCell () {
       if (this.gameStatus === 'GamePreparation') {
         this.placeShip()
-      } else if (this.gameStatus === 'Game') {
+      } else if (this.gameStatus === 'Game' && this.dataName === 'ai') {
         this.shot()
       }
     },
@@ -98,10 +112,7 @@ export default {
         this.selectedShip?.count > 0 &&
         ((this.selectedShip?.orientation === 'horizontal' && (this.coordX + this.selectedShip?.length - 1 <= 10)) ||
         (this.selectedShip?.orientation === 'vertical' && (this.coordY + this.selectedShip?.length - 1 <= 10))) &&
-        (
-          (!this.checkShipsNearby(this.playerShips) && !this.aiShipsRandomPlacement) ||
-          (!this.checkShipsNearby(this.aiShips) && this.aiShipsRandomPlacement)
-        )
+        !this.checkShipsNearby(this.placedShips, this.selectedShip)
       ) {
         let coordinates = []
         for (let i = 0; i < this.selectedShip.length; i++) {
@@ -118,42 +129,33 @@ export default {
           }
         }
 
-        if (this.aiShipsRandomPlacement) {
-          this.$store.commit('addAiShip', {
-            coordinates: coordinates,
-            length: this.selectedShip.length,
-            orientation: this.selectedShip.orientation,
-            health: this.selectedShip.length,
-          })
-        } else {
-          this.$store.commit('addPlayerShip', {
-            coordinates: coordinates,
-            length: this.selectedShip.length,
-            orientation: this.selectedShip.orientation,
-            health: this.selectedShip.length,
-          })
-        }
-        console.log(this.selectedShip.length)
+        this.$emit('placeShip', {
+          coordinates: coordinates,
+          length: this.selectedShip.length,
+          orientation: this.selectedShip.orientation,
+          health: this.selectedShip.length,
+        })
+
         this.$store.commit('decrementShipsCount', this.selectedShip.length)
       }
     },
 
-    checkShipsNearby (shipsOnField) {
-      let shipFound = false
+    checkShipsNearby (shipsOnField, ship) {
+      let shipFound = null
       const offset = 1
       let xBeg = this.coordX - offset
-      let xEnd
+      let xEnd = null
       let yBeg = this.coordY - offset
-      let yEnd
+      let yEnd = null
 
       // Устанавливаем начальные и конечные координаты нового корабля
-      if (this.selectedShip.orientation === 'horizontal') {
-        xEnd = this.coordX + this.selectedShip.length
+      if (ship.orientation === 'horizontal') {
+        xEnd = this.coordX + ship.length
         yEnd = this.coordY + offset
       }
-      if (this.selectedShip.orientation === 'vertical') {
+      if (ship.orientation === 'vertical') {
         xEnd = this.coordX + offset
-        yEnd = this.coordY + this.selectedShip.length
+        yEnd = this.coordY + ship.length
       }
 
       // Ищем пересечения с кораблями на поле
@@ -163,14 +165,14 @@ export default {
             (item.coordinates[0].x >= xBeg && item.coordinates[0].x <= xEnd) ||
             (item.coordinates[0].x <= xBeg && item.coordinates[0].x + item.length - 1 >= xBeg)
           ) {
-            return shipFound = true
+            return shipFound = item
           }
         } else if (item.orientation === 'vertical' && item.coordinates[0].x >= xBeg && item.coordinates[0].x <= xEnd) {
           if (
             (item.coordinates[0].y >= yBeg && item.coordinates[0].y <= yEnd) ||
             (item.coordinates[0].y <= yBeg && item.coordinates[0].y + item.length - 1 >= yBeg)
           ) {
-            return shipFound = true
+            return shipFound = item
           }
         }
       })
@@ -180,7 +182,7 @@ export default {
 
     removeShip () {
       if (this.gameStatus === 'GamePreparation') {
-        this.playerShips.forEach(item => {
+        this.placedShips.forEach(item => {
           item.coordinates.forEach(itemCoordinates => {
             if (itemCoordinates.x === this.coordX && itemCoordinates.y === this.coordY) {
               const shipLength = item.length
@@ -206,22 +208,27 @@ export default {
     },
     
     shot () {
-      const aiShip = this.aiShipOnCell
+      let aiShip = this.shipPartOnCell
       if (aiShip) {
-        if (aiShip.health > 0 && this.status !== 'dead') {
+        if (aiShip.health > 0 && this.status !== 'dead' && this.status !== 'hit') {
           aiShip.health--
           if (aiShip.health > 0) {
             this.status = 'hit'
           } else {
             this.status = 'dead'
           }
+
           this.$store.commit('editAiShip', aiShip)
+          
+          // if (this.status === 'dead') {
+          //   console.log(aiShip)
+          // }
         }
       } else {
         this.status = 'empty'
       }
     },
-  }
+  },
 }
 </script>
 
@@ -250,12 +257,14 @@ export default {
   }
   
   .cell__status {
+    position: absolute;
+    top: 0;
     width: 100%;
     height: 100%;
     mask-position: center;
     mask-repeat: no-repeat;
     mask-size: 32px 32px;
-    z-index: 11;
+    z-index: 12;
 
     &.cell__status_empty {
       mask-image: url('@/assets/svg/dot.svg');
@@ -264,12 +273,12 @@ export default {
 
     &.cell__status_hit {
       mask-image: url('@/assets/svg/x.svg');
-      background-color: rgb(180, 50, 50);
+      background-color: rgb(0, 0, 0);
     }
 
     &.cell__status_dead {
       mask-image: url('@/assets/svg/x.svg');
-      background-color: rgb(0, 0, 0);
+      background-color: rgb(180, 50, 50);
     }
   }
 

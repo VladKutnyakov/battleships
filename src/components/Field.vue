@@ -26,10 +26,14 @@
           ref="cells"
           class="field-grid__cell"
           v-for="index in 100"
-          :key="index"
+          :key="`${dataName}-${index}`"
           :index="index"
-          :showPlayerShips="showPlayerShips"
-          :randomShips="checkRandomCell(index)"
+          :showShips="showShips"
+          :placedShips="placedShips"
+          :dataName="dataName"
+          :randomShips="randomShips && checkRandomCell(index)"
+          @placeShip="$emit('placeShip', $event)"
+          @stopRandom="$emit('stopRandom')"
         />
       </div>
     </div>
@@ -45,8 +49,11 @@ export default {
   components: {
     Cell,
   },
+  emits: ["placeShip", "stopRandom"],
   props: {
-    showPlayerShips: Boolean,
+    dataName: String,
+    placedShips: Array,
+    showShips: Boolean,
     randomShips: Boolean,
   },
   data() {
@@ -56,12 +63,8 @@ export default {
   },
   computed: {
     ...mapState({
-      playerShips: state => state.playerShips,
-      aiShips: state => state.aiShips,
       randomCellsIndex: state => state.randomCellsIndex,
-      playerShipsRandomPlacement: state => state.playerShipsRandomPlacement,
-      aiShipsRandomPlacement: state => state.aiShipsRandomPlacement,
-    })
+    }),
   },
   watch: {
     randomShips (newValue) {
@@ -74,21 +77,19 @@ export default {
     checkRandomCell (index) {
       return this.randomCellsIndex.includes(index)
     },
+
     placeShipsRandom () {
       setTimeout(() => {
-        let randomCell
+        let randomCell = null
         while (this.checkRandomCell(randomCell)) {
           randomCell = Math.floor(Math.random() * 100 + 1)
         }
         this.$store.commit('addRandomCellsIndex', randomCell)
-        if (this.playerShipsRandomPlacement && this.playerShips.length < 10) {
-          this.placeShipsRandom()
-        }
-        if (this.aiShipsRandomPlacement && this.aiShips.length < 10) {
+        if (this.randomShips && this.placedShips.length < 10) {
           this.placeShipsRandom()
         }
       }, 0)
-    }
+    },
   },
 }
 </script>
