@@ -1,6 +1,6 @@
 <template>
   <div class="field">
-    <div 
+    <div
       class="field__field-grid"
     >
       <div class="field-grid__letters">
@@ -34,10 +34,11 @@
           :randomShips="randomShips && checkRandomCell(index)"
           @placeShip="$emit('placeShip', $event)"
           @stopRandom="$emit('stopRandom')"
+          @shotShip="$emit('shotShip', $event)"
         />
       </div>
     </div>
-  </div>  
+  </div>
 </template>
 
 <script>
@@ -49,7 +50,7 @@ export default {
   components: {
     Cell,
   },
-  emits: ["placeShip", "stopRandom"],
+  emits: ["placeShip", "stopRandom", "shotShip"],
   props: {
     dataName: String,
     placedShips: Array,
@@ -64,6 +65,7 @@ export default {
   computed: {
     ...mapState({
       randomCellsIndex: state => state.randomCellsIndex,
+      playerTurn: state => state.playerTurn,
     }),
   },
   watch: {
@@ -78,13 +80,21 @@ export default {
       return this.randomCellsIndex.includes(index)
     },
 
+    getRandomCellIndex () {
+      let randomCellIndex = null
+
+      while (this.checkRandomCell(randomCellIndex)) {
+        randomCellIndex = Math.floor(Math.random() * 100 + 1)
+      }
+
+      this.$store.commit('addRandomCellsIndex', randomCellIndex)
+
+      return randomCellIndex
+    },
+
     placeShipsRandom () {
       setTimeout(() => {
-        let randomCell = null
-        while (this.checkRandomCell(randomCell)) {
-          randomCell = Math.floor(Math.random() * 100 + 1)
-        }
-        this.$store.commit('addRandomCellsIndex', randomCell)
+        this.getRandomCellIndex()
         if (this.randomShips && this.placedShips.length < 10) {
           this.placeShipsRandom()
         }

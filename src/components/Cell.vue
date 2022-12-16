@@ -33,7 +33,7 @@ export default {
     Ship,
     ShipPart,
   },
-  emits: ["placeShip", "stopRandom"],
+  emits: ["placeShip", "stopRandom", "shotShip"],
   props: {
     index: Number,
     showShips: Boolean,
@@ -51,14 +51,18 @@ export default {
       ships: state => state.ships,
       selectedShip: state => state.selectedShip,
       gameStatus: state => state.gameStatus,
+      playerTurn: state => state.playerTurn,
+      shotTargetCell: state => state.shotTargetCell,
     }),
 
     coordX () {
       return this.index % 10 !== 0 ? this.index % 10 : 10
     },
+
     coordY () {
       return Math.ceil(this.index / 10)
     },
+
     shipOnCell () {
       return this.placedShips.find(item => item?.coordinates[0].x === this.coordX && item?.coordinates[0].y === this.coordY)
     },
@@ -76,9 +80,9 @@ export default {
         this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX - 1 && itemCoordinates.y === this.coordY) && item.health === 0) ||
         this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX - 1 && itemCoordinates.y === this.coordY - 1) && item.health === 0) ||        this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX && itemCoordinates.y === this.coordY - 1) && item.health === 0) ||
         this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX - 1 && itemCoordinates.y === this.coordY + 1) && item.health === 0) ||
-        this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX + 1 && itemCoordinates.y === this.coordY - 1) && item.health === 0) 
+        this.placedShips.find(item => item.coordinates.find(itemCoordinates => itemCoordinates.x === this.coordX + 1 && itemCoordinates.y === this.coordY - 1) && item.health === 0)
       )
-    }
+    },
   },
   watch: {
     randomShips (newValue) {
@@ -96,13 +100,19 @@ export default {
       if (newValue) {
         this.status = 'empty'
       }
-    }
+    },
+
+    shotTargetCell (newValue) {
+      if (newValue && this.dataName === 'player' && this.shotTargetCell === this.index) {
+        this.shot()
+      }
+    },
   },
   methods: {
     clickOnCell () {
       if (this.gameStatus === 'GamePreparation') {
         this.placeShip()
-      } else if (this.gameStatus === 'Game' && this.dataName === 'ai') {
+      } else if (this.gameStatus === 'Game' && this.dataName === 'ai' && this.playerTurn) {
         this.shot()
       }
     },
@@ -208,25 +218,26 @@ export default {
     },
     
     shot () {
-      let aiShip = this.shipPartOnCell
-      if (aiShip) {
-        if (aiShip.health > 0 && this.status !== 'dead' && this.status !== 'hit') {
-          aiShip.health--
-          if (aiShip.health > 0) {
-            this.status = 'hit'
-          } else {
-            this.status = 'dead'
-          }
+      // if (this.playerTurn) {
+        let ship = this.shipPartOnCell
 
-          this.$store.commit('editAiShip', aiShip)
-          
-          // if (this.status === 'dead') {
-          //   console.log(aiShip)
-          // }
+        if (ship) {
+          if (ship.health > 0 && this.status !== 'dead' && this.status !== 'hit') {
+            ship.health--
+
+            if (ship.health > 0) {
+              this.status = 'hit'
+            } else {
+              this.status = 'dead'
+            }
+
+            this.$emit('shotShip', ship)
+          }
+        } else if (this.status === 'initial') {
+          this.status = 'empty'
+          this.$store.commit('togglePlayerTurn')
         }
-      } else {
-        this.status = 'empty'
-      }
+      // }
     },
   },
 }

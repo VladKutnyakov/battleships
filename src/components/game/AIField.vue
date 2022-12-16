@@ -7,6 +7,7 @@
       :randomShips="aiShipsRandomPlacement"
       @placeShip="$store.commit('addAiShip', $event)"
       @stopRandom="$store.commit('setAiShipsRandomPlacement', false)"
+      @shotShip="shotShip($event)"
     />
   </div>  
 </template>
@@ -24,7 +25,15 @@ export default {
     ...mapState({
       aiShips: state => state.aiShips,
       aiShipsRandomPlacement: state => state.aiShipsRandomPlacement,
+      playerTurn: state => state.playerTurn,
     }),
+  },
+  methods: {
+    shotShip ($event) {
+      if (this.playerTurn) {
+        // this.$store.commit('editAiShip', $event)
+      }
+    },
   },
   mounted () {
     this.$store.commit('resetShips')

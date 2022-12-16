@@ -26,9 +26,12 @@ export default createStore({
 
     selectedShip: null,
 
-    randomCellsIndex: [],
     playerShipsRandomPlacement: false,
     aiShipsRandomPlacement: false,
+    randomCellsIndex: [],
+
+    playerTurn: true,
+    shotTargetCell: null,
 
     gameStatus: 'GamePreparation',
   },
@@ -96,12 +99,22 @@ export default createStore({
     setAiShipsRandomPlacement (state, payload) {
       state.aiShipsRandomPlacement = payload
     },
+    editPlayerShip (state, payload) {
+      const index = state.playerShips.findIndex(item => item.coordinates === payload.coordinates)
+      state.playerShips[index] = payload
+    },
     editAiShip (state, payload) {
       const index = state.aiShips.findIndex(item => item.coordinates === payload.coordinates)
       state.aiShips[index] = payload
     },
+    togglePlayerTurn (state) {
+      state.playerTurn = !state.playerTurn
+    },
     setGameStatus (state, payload) {
       state.gameStatus = payload
+    },
+    setShotTargetCell (state, payload) {
+      state.shotTargetCell = payload
     },
   },
   actions: {
