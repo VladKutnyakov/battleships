@@ -218,26 +218,23 @@ export default {
     },
     
     shot () {
-      // if (this.playerTurn) {
-        let ship = this.shipPartOnCell
+      let ship = this.shipPartOnCell
 
-        if (ship) {
-          if (ship.health > 0 && this.status !== 'dead' && this.status !== 'hit') {
-            ship.health--
-
-            if (ship.health > 0) {
-              this.status = 'hit'
-            } else {
-              this.status = 'dead'
-            }
-
-            this.$emit('shotShip', ship)
+      if (ship) {
+        if (ship.health > 0 && this.status !== 'dead' && this.status !== 'hit') {
+          ship.health--
+          if (ship.health > 0) {
+            this.status = 'hit'
+          } else {
+            this.status = 'dead'
           }
-        } else if (this.status === 'initial') {
-          this.status = 'empty'
-          this.$store.commit('togglePlayerTurn')
+
+          this.$emit('shotShip', ship)
         }
-      // }
+      } else {
+        this.status = 'empty'
+        this.$store.commit('togglePlayerTurn')
+      }
     },
   },
 }

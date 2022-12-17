@@ -7,7 +7,6 @@
       :randomShips="aiShipsRandomPlacement"
       @placeShip="$store.commit('addAiShip', $event)"
       @stopRandom="$store.commit('setAiShipsRandomPlacement', false)"
-      @shotShip="shotShip($event)"
     />
   </div>  
 </template>
@@ -29,11 +28,11 @@ export default {
     }),
   },
   methods: {
-    shotShip ($event) {
-      if (this.playerTurn) {
-        // this.$store.commit('editAiShip', $event)
-      }
-    },
+    // shotShip ($event) {
+    //   if (this.playerTurn) {
+    //     this.$store.commit('editAiShip', $event)
+    //   }
+    // },
   },
   mounted () {
     this.$store.commit('resetShips')
