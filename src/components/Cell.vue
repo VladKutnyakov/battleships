@@ -33,7 +33,7 @@ export default {
     Ship,
     ShipPart,
   },
-  emits: ["placeShip", "stopRandom", "shotShip"],
+  emits: ["placeShip", "stopRandom", "shotShipOnCell"],
   props: {
     index: Number,
     showShips: Boolean,
@@ -103,7 +103,7 @@ export default {
     },
 
     shotTargetCell (newValue) {
-      if (newValue && this.dataName === 'player' && this.shotTargetCell === this.index) {
+      if (newValue && this.dataName === 'player' && this.shotTargetCell.index === this.index) {
         this.shot()
       }
     },
@@ -112,7 +112,7 @@ export default {
     clickOnCell () {
       if (this.gameStatus === 'GamePreparation') {
         this.placeShip()
-      } else if (this.gameStatus === 'Game' && this.dataName === 'ai' && this.playerTurn) {
+      } else if (this.gameStatus === 'Game' && this.dataName === 'ai' && this.playerTurn && this.status === 'initial') {
         this.shot()
       }
     },
@@ -220,7 +220,13 @@ export default {
     shot () {
       let ship = this.shipPartOnCell
 
+      // if (!this.playerTurn) {
+      //   console.log(this.index, this.status)
+      // }
+
+      // Если на клетке корабль
       if (ship) {
+        // Если корабль не убит и не ранен
         if (ship.health > 0 && this.status !== 'dead' && this.status !== 'hit') {
           ship.health--
           if (ship.health > 0) {
@@ -229,7 +235,12 @@ export default {
             this.status = 'dead'
           }
 
-          this.$emit('shotShip', ship)
+          this.$emit('shotShipOnCell', {
+            x: this.coordX,
+            y: this.coordY,
+            index: this.index,
+            status: this.status,
+          })
         }
       } else {
         this.status = 'empty'

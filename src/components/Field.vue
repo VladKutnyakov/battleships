@@ -34,7 +34,7 @@
           :randomShips="randomShips && checkRandomCell(index)"
           @placeShip="$emit('placeShip', $event)"
           @stopRandom="$emit('stopRandom')"
-          @shotShip="$emit('shotShip', $event)"
+          @shotShipOnCell="$emit('shotShipOnCell', $event)"
         />
       </div>
     </div>
@@ -50,7 +50,7 @@ export default {
   components: {
     Cell,
   },
-  emits: ["placeShip", "stopRandom", "shotShip"],
+  emits: ["placeShip", "stopRandom", "shotShipOnCell"],
   props: {
     dataName: String,
     placedShips: Array,
@@ -83,7 +83,7 @@ export default {
     getRandomCellIndex () {
       let randomCellIndex = null
 
-      while (this.checkRandomCell(randomCellIndex)) {
+      while (this.checkRandomCell(randomCellIndex) && this.randomCellsIndex.length !== 100 && this.randomCellsIndex.length !== 100) {
         randomCellIndex = Math.floor(Math.random() * 100 + 1)
       }
 
