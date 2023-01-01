@@ -1,6 +1,6 @@
 <template>
   <div class="game">
-    <div class="game__player-block">
+    <div class="game__block game__player-block">
       <div class="player-block__field">
         <player-field />
       </div>
@@ -16,7 +16,7 @@
         Ход ИИ
       </div>
     </div>
-    <div class="game__ai-block">
+    <div class="game__block game__ai-block">
       <div class="ai-block__field">
         <a-i-field />
       </div>
@@ -74,5 +74,14 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.game__block {
+  flex: 0 0 fit-content;
+}
+
+.game__turn {
+  flex: 1 1 100%;
+  text-align: center;
 }
 </style>

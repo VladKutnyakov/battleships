@@ -16,7 +16,7 @@
       :length="shipOnCell.length"
       :orientation="shipOnCell.orientation"
     /> -->
-    <ship-part 
+    <ship-part
       v-if="shipPartOnCell && showShips"
     />
   </div>

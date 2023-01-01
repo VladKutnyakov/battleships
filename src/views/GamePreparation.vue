@@ -4,7 +4,7 @@
       Подготовка
     </div>
     <div class="game-preparation__text">
-      Выберите нужный корабль из аресенала, кликнув по нему. Затем кликните по клетке поля, чтобы поставить выбранный корабль. <br> Для удаления корябля с поля кликните по нему правой кнопкой мыши.
+      Выберите нужный корабль из арсенала, кликнув по нему. Затем кликните по клетке поля, чтобы поставить выбранный корабль. <br> Для удаления корябля с поля кликните по нему правой кнопкой мыши.
     </div>
     <div class="game-preparation__redactor">
       <player-field />
@@ -81,9 +81,10 @@ export default {
   }
 
   .game-preparation__redactor {
-    padding: 48px 0;
+    padding: 24px 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 72px;
   }
 
   .game-preparation__buttons {

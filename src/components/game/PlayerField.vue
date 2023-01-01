@@ -27,6 +27,7 @@ export default {
       playerShipsRandomPlacement: state => state.playerShipsRandomPlacement,
       playerTurn: state => state.playerTurn,
       aiShotCellsIndex: state => state.aiShotCellsIndex,
+      aiUsedDirections: state => state.aiUsedDirections,
       shotTargetDirection: state => state.shotTargetDirection,
       shotTargetCell: state => state.shotTargetCell,
       shotTargetShipIndex: state => state.shotTargetShipIndex,
@@ -40,10 +41,12 @@ export default {
 
         // Самый первый выстрел
         if (!cell) {
+          console.log('Самый первый выстрел')
           cell = this.getRandomCellToShot()
         }
         // Попал и ищет дальше
         else if (cell.status === 'hit' || this.shotTargetShipIndex[0]) {
+          console.log('Попал и ищет дальше')
           this.$store.commit('setShotTargetCell', {
             x: this.shotTargetShipIndex[0] % 10 !== 0 ? this.shotTargetShipIndex[0] % 10 : 10,
             y: Math.ceil(this.shotTargetShipIndex[0] / 10),
@@ -56,6 +59,7 @@ export default {
         }
         // Не попал
         else {
+          console.log('Не попал')
           cell = this.getRandomCellToShot()
         }
         this.makeShot({
@@ -73,23 +77,29 @@ export default {
 
         // Убил
         if ($event.status === 'dead') {
+          console.log('Убил')
           this.$store.commit('addShotTargetShipIndex', cell.index)
           this.addDeadShipIndex()
           this.$store.commit('setShotTargetShipIndex', [])
+          this.$store.commit('setAiUsedDirections', [])
         }
         // Попал (не в первый раз)
         if ($event.status === 'hit' && this.shotTargetDirection) {
+          console.log('Попал (не в первый раз)')
           this.$store.commit('addShotTargetShipIndex', cell.index)
           cell = this.getCellToShot(cell)
         }
         // Попал (в первый раз)
         else if ($event.status === 'hit' && !this.shotTargetDirection) {
+          console.log('Попал (в первый раз)')
           this.$store.commit('addShotTargetShipIndex', cell.index)
           cell.direction = this.changeDirection()
+          this.$store.commit('addAiUsedDirections', cell.direction)
           cell = this.getCellToShot(cell)
         }
         // Не попал
         else {
+          console.log('Не попал')
           cell = this.getRandomCellToShot()
           this.$store.commit('setShotTargetDirection', null)
         }
@@ -130,39 +140,40 @@ export default {
       const offset = 1
       let target = cell
 
-      console.log('before', target)
+      console.log('get cell to shot before', target)
 
       while (this.isOutsideOfField(target, target.direction) || this.isAlreadyShot(target)) {
         target.direction = this.changeDirection(target)
       }
       
-      // switch (target.direction) {
-      //   case 'right':
-      //     target.x += offset
-      //     break
-      //   case 'left':
-      //     target.x -= offset
-      //     break
-      //   case 'up':
-      //     target.y -= offset
-      //     break
-      //   case 'down':
-      //     target.y += offset
-      //     break
-      // }
+      switch (target.direction) {
+        case 'right':
+          target.x += offset
+          break
+        case 'left':
+          target.x -= offset
+          break
+        case 'up':
+          target.y -= offset
+          break
+        case 'down':
+          target.y += offset
+          break
+      }
       
-      console.log('after', target)
+      console.log('get cell to shot after', target)
 
-      // target.index = target.y * 10 + target.x - 10
+      target.index = target.y * 10 + target.x - 10
 
-      console.log('after index', target.index )
+      console.log('get cell to shot after index', target.index )
 
       return target
     },
 
     changeDirection(cell) {
+      console.log('change direction from', this.shotTargetDirection)
       let direction = this.shotTargetDirection
-      if (direction && cell.status === 'hit') {
+      if (direction && cell.status === 'hit' && this.aiUsedDirections.length < 2) {
         switch (direction) {
           case 'right':
             direction = 'left'
@@ -177,6 +188,7 @@ export default {
             direction = 'up'
             break
         }
+        this.$store.commit('addAiUsedDirections', direction)
       } else {
         const directionIndex = Math.floor(Math.random() * 4 + 1)
         switch (directionIndex) {
@@ -196,16 +208,18 @@ export default {
       }
 
       this.$store.commit('setShotTargetDirection', direction)
+      console.log('change direction to', this.shotTargetDirection)
       return direction
     },
 
     isOutsideOfField (cell, direction) {
       const offset = 1
+      const nextCell = cell
       return (
-        (direction === 'right' && cell.x + offset > 10) || 
-        (direction === 'left' && cell.x - offset < 1) ||
-        (direction === 'up' && cell.y - offset < 1) ||
-        (direction === 'down' && cell.y + offset > 10)
+        (direction === 'right' && nextCell.x + offset > 10) || 
+        (direction === 'left' && nextCell.x - offset < 1) ||
+        (direction === 'up' && nextCell.y - offset < 1) ||
+        (direction === 'down' && nextCell.y + offset > 10)
       )
     },
 
@@ -228,6 +242,7 @@ export default {
       }
       
       nextCell.index = nextCell.index = nextCell.y * 10 + nextCell.x - 10
+      console.log('isAlreadyShot', nextCell)
 
       return this.aiShotCellsIndex.includes(nextCell.index)
     },

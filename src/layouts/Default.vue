@@ -31,7 +31,7 @@ export default {
 
   .default-layout__wrapper {
     height: -webkit-fill-available;
-    padding: 3% 20%;
+    padding: 3% 10%;
   }
 }
 </style>

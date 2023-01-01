@@ -30,12 +30,13 @@ export default createStore({
     aiShipsRandomPlacement: false,
     randomCellsIndex: [],
 
-    playerTurn: true,
     aiShotCellsIndex: [],
+    aiUsedDirections: [],
     shotTargetCell: null,
     shotTargetDirection: null,
     shotTargetShipIndex: [],
 
+    playerTurn: true,
     gameStatus: 'GamePreparation',
   },
   getters: {
@@ -121,6 +122,12 @@ export default createStore({
     },
     setAiShotCellsIndex (state, payload) {
       state.aiShotCellsIndex = payload
+    },
+    addAiUsedDirections (state, payload) {
+      state.aiUsedDirections.push(payload)
+    },
+    setAiUsedDirections (state, payload) {
+      state.aiUsedDirections = payload
     },
     setShotTargetCell (state, payload) {
       state.shotTargetCell = payload

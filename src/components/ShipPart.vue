@@ -1,5 +1,5 @@
 <template>
-  <div class="ship-part" />
+  <div class="ship-part"/>
 </template>
 
 <script>
@@ -17,7 +17,5 @@ export default {
   background-color: rgb(219, 197, 0);
   border: 4px solid rgb(131, 118, 0);
   cursor: pointer;
-
-
 }
 </style>
