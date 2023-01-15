@@ -13,7 +13,7 @@
         Ваш ход
       </div>
       <div v-else class="turn__ai-turn">
-        Ход ИИ
+        Ход врага
       </div>
       <div
         class="turn__icon"
@@ -83,6 +83,7 @@ export default {
 
     alivePlayerShipsCount (newValue) {
       if (newValue === 0) {
+        console.log('Поражение')
         this.playerWon = false
         this.$store.commit('toggleModalVisibility', 'gameEndModalActive')
       }
@@ -109,17 +110,17 @@ export default {
   align-items: center;
 
   .turn__icon {
-    width: 128px;
-    height: 128px;
+    width: 98px;
+    height: 98px;
     mask-image: url('@/assets/svg/arrow.svg');
+    background-color: rgb(141, 0, 0);
 
     &.turn__icon-right {
-      background-color: rgb(0, 139, 58);
+      transform: rotate(90deg);
     }
 
     &.turn__icon-left {
-      background-color: rgb(141, 0, 0);
-      transform: rotate(180deg);
+      transform: rotate(270deg);
     }
   }
 }

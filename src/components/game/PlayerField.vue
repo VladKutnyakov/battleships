@@ -32,6 +32,10 @@ export default {
       shotTargetCell: state => state.shotTargetCell,
       shotTargetShipIndex: state => state.shotTargetShipIndex,
     }),
+    
+    alivePlayerShipsCount () {
+      return this.playerShips.filter(item => item.health > 0).length
+    },
   },
   watch: {
     // Сменился ход
@@ -72,7 +76,7 @@ export default {
   methods: {
     // Попал по кораблю
     shotShip ($event) {
-      if (!this.playerTurn) {
+      if (!this.playerTurn && this.alivePlayerShipsCount > 0) {
         let cell = $event
 
         // Убил

@@ -3,7 +3,6 @@
     <field
       :dataName="'ai'"
       :placedShips="aiShips"
-      :showShips="true"
       :randomShips="aiShipsRandomPlacement"
       @placeShip="$store.commit('addAiShip', $event)"
       @stopRandom="$store.commit('setAiShipsRandomPlacement', false)"

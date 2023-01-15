@@ -2,7 +2,7 @@
   <div class="footer">
     <div class="footer__contacts">
       <div class="contacts__author">
-        Кутняков Владислав 2022 г.
+        Кутняков Владислав 2023 г.
       </div>
       <div class="contacts__socials">
         <a
