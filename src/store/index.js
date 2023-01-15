@@ -38,6 +38,8 @@ export default createStore({
 
     playerTurn: true,
     gameStatus: 'GamePreparation',
+
+    gameEndModalActive: false,
   },
   getters: {
   },
@@ -140,6 +142,9 @@ export default createStore({
     },
     addShotTargetShipIndex (state, payload) {
       state.shotTargetShipIndex.push(payload)
+    },
+    toggleModalVisibility (state, payload) {
+      state[payload] = !state[payload]
     },
   },
   actions: {

@@ -87,6 +87,7 @@ export default {
         if ($event.status === 'hit' && this.shotTargetDirection) {
           console.log('Попал (не в первый раз)')
           this.$store.commit('addShotTargetShipIndex', cell.index)
+          cell.direction = this.shotTargetDirection
           cell = this.getCellToShot(cell)
         }
         // Попал (в первый раз)
@@ -140,11 +141,12 @@ export default {
       const offset = 1
       let target = cell
 
-      console.log('get cell to shot before', target)
+      // console.log('get cell to shot before', target)
 
       while (this.isOutsideOfField(target, target.direction) || this.isAlreadyShot(target)) {
         target.direction = this.changeDirection(target)
       }
+      // console.log('get cell to shot проверки', target)
       
       switch (target.direction) {
         case 'right':
@@ -160,12 +162,10 @@ export default {
           target.y += offset
           break
       }
-      
-      console.log('get cell to shot after', target)
 
       target.index = target.y * 10 + target.x - 10
 
-      console.log('get cell to shot after index', target.index )
+      // console.log('get cell to shot after', target)
 
       return target
     },
@@ -225,26 +225,17 @@ export default {
 
     isAlreadyShot (cell) {
       const offset = 1
-      const nextCell = cell
-      switch (nextCell.direction) {
-        case 'right':
-          nextCell.x += offset
-          break
-        case 'left':
-          nextCell.x -= offset
-          break
-        case 'up':
-          nextCell.y -= offset
-          break
-        case 'down':
-          nextCell.y += offset
-          break
-      }
       
-      nextCell.index = nextCell.index = nextCell.y * 10 + nextCell.x - 10
-      console.log('isAlreadyShot', nextCell)
-
-      return this.aiShotCellsIndex.includes(nextCell.index)
+      switch (cell.direction) {
+        case 'right':
+          return this.aiShotCellsIndex.includes(cell.index + offset)
+        case 'left':
+          return this.aiShotCellsIndex.includes(cell.index - offset)
+        case 'up':
+          return this.aiShotCellsIndex.includes(cell.index - offset * 10)
+        case 'down':
+          return this.aiShotCellsIndex.includes(cell.index + offset * 10)
+      }
     },
 
     addDeadShipIndex () {

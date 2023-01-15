@@ -15,6 +15,13 @@
       <div v-else class="turn__ai-turn">
         Ход ИИ
       </div>
+      <div
+        class="turn__icon"
+        :class="[
+          { 'turn__icon-right': playerTurn },
+          { 'turn__icon-left': !playerTurn },
+        ]"
+      />
     </div>
     <div class="game__block game__ai-block">
       <div class="ai-block__field">
@@ -24,6 +31,11 @@
         Кораблей в живых: {{ aliveAiShipsCount }}
       </div>
     </div>
+
+    <game-end-modal
+      :modalActive="gameEndModalActive"
+      :playerWon="playerWon"
+    />
   </div>
 </template>
 
@@ -31,18 +43,26 @@
 import { mapState } from 'vuex'
 import PlayerField from '@/components/game/PlayerField'
 import AIField from '@/components/game/AIField'
+import GameEndModal from '@/components/game/GameEndModal'
 
 export default {
   name: 'Game',
   components: {
     PlayerField,
     AIField,
+    GameEndModal,
+  },
+  data() {
+    return {
+      playerWon: false,
+    }
   },
   computed: {
     ...mapState({
       playerShips: state => state.playerShips,
       aiShips: state => state.aiShips,
       playerTurn: state => state.playerTurn,
+      gameEndModalActive: state => state.gameEndModalActive,
     }),
 
     aliveAiShipsCount () {
@@ -56,13 +76,15 @@ export default {
   watch: {
     aliveAiShipsCount (newValue) {
       if (newValue === 0) {
-        console.log('Победа!')
+        this.playerWon = true
+        this.$store.commit('toggleModalVisibility', 'gameEndModalActive')
       }
     },
 
     alivePlayerShipsCount (newValue) {
       if (newValue === 0) {
-        console.log('Поражение!')
+        this.playerWon = false
+        this.$store.commit('toggleModalVisibility', 'gameEndModalActive')
       }
     },
   },
@@ -81,7 +103,24 @@ export default {
 }
 
 .game__turn {
+  display: flex;
+  flex-direction: column;
   flex: 1 1 100%;
-  text-align: center;
+  align-items: center;
+
+  .turn__icon {
+    width: 128px;
+    height: 128px;
+    mask-image: url('@/assets/svg/arrow.svg');
+
+    &.turn__icon-right {
+      background-color: rgb(0, 139, 58);
+    }
+
+    &.turn__icon-left {
+      background-color: rgb(141, 0, 0);
+      transform: rotate(180deg);
+    }
+  }
 }
 </style>
