@@ -33,7 +33,6 @@ export default {
     Ship,
     ShipPart,
   },
-  emits: ["placeShip", "stopRandom", "shotShipOnCell"],
   props: {
     index: Number,
     showShips: Boolean,
@@ -87,7 +86,7 @@ export default {
   watch: {
     randomShips (newValue) {
       if (newValue && this.placedShips.length < 10) {
-        this.selectRandomShip()
+        this.selectShip()
         this.placeShip()
       } else {
         this.$store.commit('setSelectedShip', null)
@@ -204,10 +203,10 @@ export default {
       }
     },
 
-    selectRandomShip () {
-      let selectedShipIndex = Math.floor(Math.random() * 4)
+    selectShip () {
+      let selectedShipIndex = 3
       while (this.ships[selectedShipIndex]?.count === 0) {
-        selectedShipIndex = Math.floor(Math.random() * 4)
+        selectedShipIndex--
       }
       const orientation = Math.floor(Math.random() * 2) === 0 ? 'horizontal' : 'vertical'
       const ship = {
@@ -219,10 +218,6 @@ export default {
     
     shot () {
       let ship = this.shipPartOnCell
-
-      // if (!this.playerTurn) {
-      //   console.log(this.index, this.status)
-      // }
 
       // Если на клетке корабль
       if (ship) {

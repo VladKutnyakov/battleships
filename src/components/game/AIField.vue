@@ -26,13 +26,6 @@ export default {
       playerTurn: state => state.playerTurn,
     }),
   },
-  methods: {
-    // shotShip ($event) {
-    //   if (this.playerTurn) {
-    //     this.$store.commit('editAiShip', $event)
-    //   }
-    // },
-  },
   mounted () {
     this.$store.commit('resetShips')
     this.$store.commit('setAiShips', [])

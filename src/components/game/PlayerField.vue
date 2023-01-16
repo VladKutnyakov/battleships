@@ -45,12 +45,10 @@ export default {
 
         // Самый первый выстрел
         if (!cell) {
-          console.log('Самый первый выстрел')
           cell = this.getRandomCellToShot()
         }
         // Попал и ищет дальше
         else if (cell.status === 'hit' || this.shotTargetShipIndex[0]) {
-          console.log('Попал и ищет дальше')
           this.$store.commit('setShotTargetCell', {
             x: this.shotTargetShipIndex[0] % 10 !== 0 ? this.shotTargetShipIndex[0] % 10 : 10,
             y: Math.ceil(this.shotTargetShipIndex[0] / 10),
@@ -63,7 +61,6 @@ export default {
         }
         // Не попал
         else {
-          console.log('Не попал')
           cell = this.getRandomCellToShot()
         }
         this.makeShot({
@@ -81,7 +78,6 @@ export default {
 
         // Убил
         if ($event.status === 'dead') {
-          console.log('Убил')
           this.$store.commit('addShotTargetShipIndex', cell.index)
           this.addDeadShipIndex()
           this.$store.commit('setShotTargetShipIndex', [])
@@ -89,14 +85,12 @@ export default {
         }
         // Попал (не в первый раз)
         if ($event.status === 'hit' && this.shotTargetDirection) {
-          console.log('Попал (не в первый раз)')
           this.$store.commit('addShotTargetShipIndex', cell.index)
           cell.direction = this.shotTargetDirection
           cell = this.getCellToShot(cell)
         }
         // Попал (в первый раз)
         else if ($event.status === 'hit' && !this.shotTargetDirection) {
-          console.log('Попал (в первый раз)')
           this.$store.commit('addShotTargetShipIndex', cell.index)
           cell.direction = this.changeDirection()
           this.$store.commit('addAiUsedDirections', cell.direction)
@@ -104,7 +98,6 @@ export default {
         }
         // Не попал
         else {
-          console.log('Не попал')
           cell = this.getRandomCellToShot()
           this.$store.commit('setShotTargetDirection', null)
         }
@@ -120,7 +113,6 @@ export default {
 
     makeShot (cell) {
       setTimeout(() => {
-        console.log('shot', cell)
         this.$store.commit('addAiShotCellsIndex', cell.index)
         this.$store.commit('setShotTargetCell', cell)
       }, 500)
@@ -145,12 +137,9 @@ export default {
       const offset = 1
       let target = cell
 
-      // console.log('get cell to shot before', target)
-
       while (this.isOutsideOfField(target, target.direction) || this.isAlreadyShot(target)) {
         target.direction = this.changeDirection(target)
       }
-      // console.log('get cell to shot проверки', target)
       
       switch (target.direction) {
         case 'right':
@@ -169,13 +158,10 @@ export default {
 
       target.index = target.y * 10 + target.x - 10
 
-      // console.log('get cell to shot after', target)
-
       return target
     },
 
     changeDirection(cell) {
-      console.log('change direction from', this.shotTargetDirection)
       let direction = this.shotTargetDirection
       if (direction && cell.status === 'hit' && this.aiUsedDirections.length < 2) {
         switch (direction) {
@@ -212,7 +198,6 @@ export default {
       }
 
       this.$store.commit('setShotTargetDirection', direction)
-      console.log('change direction to', this.shotTargetDirection)
       return direction
     },
 

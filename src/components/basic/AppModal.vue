@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import AppButton from '@/components/basic/AppButton';
+import AppButton from '@/components/basic/AppButton'
 
 export default {
   name: 'AppModal',
@@ -107,7 +107,7 @@ export default {
       color: rgb(255, 255, 255);
       background-color: rgb(110, 0, 0);
       border-radius: 16px 16px 0 0;
-      font-size: 24px;
+      font-size: 36px;
     }
 
     .modal__content {
@@ -130,8 +130,13 @@ export default {
 
       .footer__btn-group {
         display: flex;
-        flex: 40% 0 0;
+        flex: 50% 0 0;
         justify-content: space-between;
+
+        .btn {
+          flex: 100% 1 1;
+          margin: 0 8px;
+        }
       }
     }
   }

@@ -116,6 +116,9 @@ export default createStore({
     togglePlayerTurn (state) {
       state.playerTurn = !state.playerTurn
     },
+    setPlayerTurn (state, payload) {
+      state.playerTurn = payload
+    },
     setGameStatus (state, payload) {
       state.gameStatus = payload
     },

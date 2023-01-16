@@ -6,12 +6,43 @@
     <div class="header__title">
       Морской бой
     </div>
+    <div v-if="gameStatus === 'Game'" class="header__new-game-btn">
+      <app-button
+        @click="restartGame()"
+      >
+        Новая игра
+      </app-button>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import AppButton from '@/components/basic/AppButton'
+
 export default {
   name: 'TheHeader',
+  components: {
+    AppButton,
+  },
+  computed: {
+    ...mapState({
+      gameStatus: state => state.gameStatus,
+    }),
+  },
+  methods: {
+    restartGame () {
+      this.$store.commit('setGameStatus', 'GamePreparation')
+      this.$store.commit('setPlayerTurn', true)
+      this.$store.commit('resetShips')
+      this.$store.commit('setPlayerShips', [])
+      this.$store.commit('setAiShips', [])
+      this.$store.commit('setAiShotCellsIndex', [])
+      this.$store.commit('setShotTargetDirection', null)
+      this.$store.commit('setShotTargetCell', null)
+      this.$store.commit('setAiUsedDirections', [])
+    },
+  },
 }
 </script>
 
@@ -33,10 +64,17 @@ export default {
   }
 
   .header__title {
+    flex: 100% 1 1;
     font-size: 38px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 3px;
+  }
+
+  .header__new-game-btn {
+    // flex: 10% 1 1;
+    width: fit-content;
+    white-space: nowrap;
   }
 }
 </style>

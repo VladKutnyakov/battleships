@@ -4,8 +4,8 @@
       <div class="player-block__field">
         <player-field />
       </div>
-      <div class="player-block__alive-count">
-        Кораблей в живых: {{ alivePlayerShipsCount }}
+      <div class="game-block__alive-count">
+        Кораблей на поле: <span class="alive-count__number">{{ alivePlayerShipsCount }}</span>
       </div>
     </div>
     <div class="game__turn">
@@ -27,8 +27,8 @@
       <div class="ai-block__field">
         <a-i-field />
       </div>
-      <div class="ai-block__alive-count">
-        Кораблей в живых: {{ aliveAiShipsCount }}
+      <div class="game-block__alive-count">
+        Кораблей на поле: <span class="alive-count__number">{{ aliveAiShipsCount }}</span>
       </div>
     </div>
 
@@ -77,15 +77,18 @@ export default {
     aliveAiShipsCount (newValue) {
       if (newValue === 0) {
         this.playerWon = true
-        this.$store.commit('toggleModalVisibility', 'gameEndModalActive')
+        setTimeout(() => {
+          this.$store.commit('toggleModalVisibility', 'gameEndModalActive')
+        }, 1000)
       }
     },
 
     alivePlayerShipsCount (newValue) {
       if (newValue === 0) {
-        console.log('Поражение')
         this.playerWon = false
-        this.$store.commit('toggleModalVisibility', 'gameEndModalActive')
+        setTimeout(() => {
+          this.$store.commit('toggleModalVisibility', 'gameEndModalActive')
+        }, 1000)
       }
     },
   },
@@ -101,6 +104,24 @@ export default {
 
 .game__block {
   flex: 0 0 fit-content;
+
+  .game-block__alive-count {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    margin: 12px 0 0 0;
+
+    .alive-count__number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      margin: 0 0 0 8px;
+      border: 2px solid rgb(141, 0, 0);
+      border-radius: 50%;
+    }
+  }
 }
 
 .game__turn {
@@ -108,6 +129,7 @@ export default {
   flex-direction: column;
   flex: 1 1 100%;
   align-items: center;
+  font-size: 24px;
 
   .turn__icon {
     width: 98px;

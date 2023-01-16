@@ -45,6 +45,7 @@ export default {
   methods: {
     restartGame () {
       this.$store.commit('setGameStatus', 'GamePreparation')
+      this.$store.commit('setPlayerTurn', true)
       this.$store.commit('resetShips')
       this.$store.commit('setPlayerShips', [])
       this.$store.commit('setAiShips', [])
